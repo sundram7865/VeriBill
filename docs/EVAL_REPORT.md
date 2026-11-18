@@ -4,7 +4,7 @@ Every number here comes from a run executed in this repository, with the command
 The exact result files behind the tables are kept in `evals/results/published/`.
 Anything that needs a live model is marked **NOT MEASURED** with the command to run.
 
-**Read this first:** no OpenAI API key was available while building, so all pipeline numbers below use
+**Read this first:** no LLM API key was available while building, so all pipeline numbers below use
 the **oracle** client. It answers every extraction and repair call with the ground truth, so field
 accuracy is 1.0 by construction and says nothing about the model. What the oracle runs *do* measure,
 on real PDFs and scans, is everything around the model: PDF text layer and Tesseract OCR, grounding
@@ -144,13 +144,15 @@ trade-off the threshold controls: on the held-out split, lowering it from 0.9 to
 The CI gate (`python -m evals.gate`) re-runs this oracle suite on every pull request and fails if any
 quality metric drops more than 0.02 below `evals/baseline.json` (a trimmed copy of `oracle-all-r2.json`).
 
-## 6. Live model (gpt-6-luna): NOT MEASURED
+## 6. Live model (gemini-3.5-flash-lite): NOT MEASURED
 
-Needs `OPENAI_API_KEY`. Reproduce with record mode (saves every response for offline replay):
+Needs a free `GEMINI_API_KEY` (aistudio.google.com). Reproduce with record mode (saves every response
+for offline replay):
 
 ```bash
-export OPENAI_API_KEY=... EXTRACT_MODEL=gpt-6-luna REPAIR_MODEL=gpt-6-luna LLM_REASONING_EFFORT=low
-export EVAL_MODE=record LLM_DAILY_BUDGET_USD=2
+export LLM_PROVIDER=gemini GEMINI_API_KEY=... LLM_BILLING_TIER=free
+export EXTRACT_MODEL=gemini-3.5-flash-lite REPAIR_MODEL=gemini-3.5-flash-lite LLM_REASONING_EFFORT=low
+export EVAL_MODE=record
 python -m evals.run --extractor pipeline --max-repairs 0 --out evals/results/live-r0.json   # before repair
 python -m evals.run --extractor pipeline --max-repairs 2 --out evals/results/live-r2.json   # after repair
 python -m evals.report evals/results/live-r2.json --before evals/results/live-r0.json
@@ -164,7 +166,7 @@ python -m evals.report evals/results/live-r2.json --before evals/results/live-r0
 | Auto-approval rate and accuracy of auto-approved documents | NOT MEASURED |
 | Repair loop gain (before vs after) | NOT MEASURED |
 | Prompt-injection resistance of the model itself | NOT MEASURED (the oracle run shows only that the pipeline does not break) |
-| Cost per document | NOT MEASURED (pricing for the default model: $0.10 / $0.50 per 1M input/output tokens) |
+| Cost per document | $0 on the free tier by definition; paid-tier cost NOT MEASURED (paid price $0.30 / $2.50 per 1M input/output tokens) |
 | p50/p95 latency including the model | NOT MEASURED |
 | Tuned auto-approve threshold (dev) and its held-out result | NOT MEASURED (default 0.9 kept; see DECISIONS D-031) |
 

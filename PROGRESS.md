@@ -53,7 +53,7 @@ so this file is the record of what is done.
   scratch oracle-backed extractor (not in repo).
 
 ## Open items
-- Live-model numbers (needs OPENAI_API_KEY), real Cloudinary run, deploy to EC2: owner actions in SETUP.md.
+- Live-model numbers (needs a free GEMINI_API_KEY), real Cloudinary run, deploy to EC2: owner actions in SETUP.md.
 - Docker stack verified healthy here (postgres, redis, extractor, api, worker); `pnpm e2e` reached the
   extractor and ended `failed: llm_not_configured` as expected without a key. Web dev image build timed out
   on this network (KNOWN_ISSUES #11). App containers were stopped afterwards (`docker compose up -d` restarts).

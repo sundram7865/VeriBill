@@ -17,7 +17,7 @@ flowchart LR
   W[Worker] --> R
   W <--> C
   W -->|POST /v1/extract<br/>private network| X[Extractor<br/>FastAPI + LangGraph]
-  X --> O[OpenAI<br/>structured outputs]
+  X --> O[Gemini API<br/>structured outputs]
   M[MCP server<br/>read-only] -->|GET| A
 ```
 
@@ -39,7 +39,7 @@ Measured on a seeded suite of 150 synthetic GST invoices (5 layouts; 88 digital 
 with blur, noise, rotation and low resolution; 40 adversarial cases). Full tables and commands:
 [docs/EVAL_REPORT.md](docs/EVAL_REPORT.md).
 
-**No OpenAI key was available while building**, so these numbers come from the **oracle** run: the
+**No LLM API key was available while building**, so these numbers come from the **oracle** run: the
 LLM is replaced by ground truth and everything else (OCR, grounding, validators, routing) runs for real.
 They measure the safety net, not the model.
 
@@ -68,7 +68,7 @@ pnpm install && pnpm seed:samples          # upload 8 sample invoices through th
 ```
 
 Open http://localhost:3000 and sign in as `reviewer@demo.invoiceiq.test` / `demo-reviewer-password`
-(admin: `admin@demo.invoiceiq.test` / `demo-admin-password`). Without `OPENAI_API_KEY` in `.env`,
+(admin: `admin@demo.invoiceiq.test` / `demo-admin-password`). Without a `GEMINI_API_KEY` in `.env` (free from aistudio.google.com),
 uploads end as **failed** with a clear "llm_not_configured" reason; add a key (docs/SETUP.md) for
 real extractions. Manual browser test: docs/MANUAL_TEST.md.
 
@@ -116,7 +116,7 @@ docs                ARCHITECTURE, DECISIONS, EVAL_REPORT, INTERVIEW_NOTES, DEPLO
 - [Known issues](docs/KNOWN_ISSUES.md) · [Interview notes](docs/INTERVIEW_NOTES.md) · [Manual test](docs/MANUAL_TEST.md)
 
 Stack: TypeScript, Python, SQL · Next.js 16, React 19, Tailwind 4, TanStack Query, react-pdf ·
-Express 5, Prisma 6, Zod 4, BullMQ 5, pino, JWT, multer · FastAPI, Pydantic 2, LangGraph, OpenAI SDK,
+Express 5, Prisma 6, Zod 4, BullMQ 5, pino, JWT, multer · FastAPI, Pydantic 2, LangGraph, Google Gen AI SDK (Gemini; OpenAI optional),
 PyMuPDF, Tesseract, Pillow, rapidfuzz · PostgreSQL 16, Redis, Docker Compose, Nginx, GitHub Actions,
 GHCR, one AWS EC2 instance, Cloudinary · Vitest, pytest, Ruff, ESLint, Prettier · FastMCP.
 

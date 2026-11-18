@@ -6,7 +6,7 @@ service. Prerequisites and accounts: docs/SETUP.md.
 
 ```
 Internet ──443──> nginx (static web + /api proxy + TLS) ──> api ──> postgres, redis
-                                                            worker ──> extractor ──> OpenAI
+                                                            worker ──> extractor ──> Gemini API
                                                                └────> Cloudinary
 ```
 

@@ -33,7 +33,7 @@ Each entry: decision, alternatives considered, reason. Newest at the bottom.
 - Reason: `mcp` 2.x (current on 2026-11-18) renamed FastMCP to `MCPServer` and removed `mcp.server.fastmcp`.
   The brief asks for FastMCP, and the standalone `fastmcp` package keeps that API.
 
-## D-007 Default LLM: `gpt-6-luna` for both EXTRACT_MODEL and REPAIR_MODEL
+## D-007 Default LLM: `gpt-6-luna` for both EXTRACT_MODEL and REPAIR_MODEL (superseded by D-035)
 - Alternatives: gpt-5-nano ($0.05/$0.40 per 1M), gpt-5.6-luna ($0.20/$1.20), gpt-4o-mini ($0.15/$0.60),
   gpt-6.1-terra ($1/$5) as a stronger repair model.
 - Reason: checked on OpenAI's official pricing and model pages on 2026-11-18. gpt-6-luna is the low-cost tier of
@@ -87,7 +87,7 @@ Each entry: decision, alternatives considered, reason. Newest at the bottom.
 
 ## D-016 Offline evals use an "oracle" LLM client, clearly labelled
 - Alternatives: report nothing offline; build a regex extractor baseline.
-- Reason: there is no OpenAI key in this environment and recordings must never be fabricated. The oracle client
+- Reason: there is no LLM API key in this environment and recordings must never be fabricated. The oracle client
   returns the ground truth as if it were the model output, so the run measures everything except the LLM:
   parsing/OCR, grounding, validators, routing and non-LLM latency. Its numbers are always labelled "oracle"
   and are never presented as extraction accuracy. Live accuracy is NOT MEASURED until a key is provided.
@@ -186,3 +186,18 @@ Each entry: decision, alternatives considered, reason. Newest at the bottom.
 ## D-033 The optional pgvector experiment was not run
 - It needs embeddings and extraction from a live model to show any effect; without an API key there is
   nothing honest to measure. pgvector stays unused (the image supports it). See EVAL_REPORT.md.
+
+## D-035 Default LLM switched to Gemini's free tier (`gemini-3.5-flash-lite`)
+- Owner request: run the project without paying for an LLM. `LLM_PROVIDER=gemini` is the default;
+  OpenAI remains available behind the same `LLMClient` interface (`LLM_PROVIDER=openai`).
+- Model: `gemini-3.5-flash-lite`, checked on Google's model and pricing pages on 2026-11-18: stable,
+  structured outputs and thinking supported, on the free tier (paid price $0.30 / $2.50 per 1M tokens).
+  Alternatives on the free tier: `gemini-3.8-flash` (stronger, slower), `gemini-3.1-flash-lite`;
+  `gemini-2.5-*` are deprecated.
+- SDK: `google-genai` `models.generate_content` with `response_json_schema` (the Pydantic schema, incl.
+  `anyOf` null and `additionalProperties: false`) and `system_instruction`; the response is still parsed
+  against the schema on our side. Thinking level maps from `LLM_REASONING_EFFORT` (low by default);
+  temperature is only sent when configured. Thinking tokens count as output tokens.
+- Free-tier trade-offs: prompts may be used by Google to improve its products (fine for synthetic data,
+  not for real invoices: switch to a paid key first), and per-minute/per-day quotas apply. The SDK retries
+  429/5xx with exponential backoff. Cost is recorded as $0 when `LLM_BILLING_TIER=free`.

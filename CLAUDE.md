@@ -11,6 +11,8 @@ One-line pitch: the LLM proposes, rules verify, humans handle the uncertain case
   Phase checkpoints still go into PROGRESS.md.
 - **Keep code modular**: small files with one responsibility each. Do not pile many things into one file.
 - Scope for the first run: build Phases 0 to 7 in one continuous run (owner confirmed).
+- The LLM provider is Google Gemini's free tier by default (owner request, DECISIONS D-035); OpenAI
+  remains an option behind the same client interface.
 - The brief refers to "section 10" for AWS Free Tier and Cloudinary details, but that section was not included
   in the brief. The assumptions made in its place are recorded in docs/DECISIONS.md and docs/SETUP.md.
 
@@ -24,7 +26,7 @@ One-line pitch: the LLM proposes, rules verify, humans handle the uncertain case
   (done, next, open issues) so the work can resume if context resets.
 - If stuck on a non-critical item after 3 honest attempts, apply the simplest workaround, log it in
   docs/KNOWN_ISSUES.md, and keep going.
-- Never ask for keys or credentials. Everything must build and pass its tests without OPENAI_API_KEY or
+- Never ask for keys or credentials. Everything must build and pass its tests without an LLM API key or
   Cloudinary credentials, using the fake and replay LLM clients and the local storage driver.
   docs/SETUP.md lists every key and one-time console setting the owner must provide.
 - **Never invent metrics.** Every number in the README or docs must come from an eval or test run executed

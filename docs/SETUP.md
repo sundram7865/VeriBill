@@ -4,14 +4,28 @@ Nothing below is needed to build the project or run its tests: those use the fak
 clients and the local storage driver. You need these to (1) run real extractions, (2) store files in
 Cloudinary, and (3) deploy to AWS.
 
-## 1. OpenAI (the only paid dependency)
+## 1. Gemini API (default LLM, free tier)
 
 | What | Where it goes | Notes |
 |---|---|---|
-| `OPENAI_API_KEY` | `.env` (local), `/opt/invoiceiq/.env` (server), GitHub secret `OPENAI_API_KEY` (live eval workflow) | Create at platform.openai.com → API keys. Use a project key with a monthly budget set in the OpenAI console as a second safety net. |
-| `EXTRACT_MODEL`, `REPAIR_MODEL` | same files; optionally GitHub *variables* of the same names | Default `gpt-6-luna` (DECISIONS D-007). Check the model is enabled for your project. If you switch to a non-reasoning model, set `LLM_REASONING_EFFORT=` (empty) and optionally `LLM_TEMPERATURE=0`. |
-| `LLM_DAILY_BUDGET_USD` | same files | Hard cap counted in Redis; the extractor refuses work after it (HTTP 429, document marked failed with the reason). Start with 1–2. |
-| `services/extractor/pricing.json` | repo | Update prices if OpenAI changes them; cost estimates come from this file. |
+| `GEMINI_API_KEY` | `.env` (local), `/opt/invoiceiq/.env` (server), GitHub secret `GEMINI_API_KEY` (live eval workflow) | Free: sign in at aistudio.google.com → **Get API key** → create a key. No card needed for the free tier. |
+| `LLM_PROVIDER` | same files | `gemini` (default) or `openai`. |
+| `EXTRACT_MODEL`, `REPAIR_MODEL` | same files; optionally GitHub *variables* of the same names | Default `gemini-3.5-flash-lite` (DECISIONS D-035): stable, structured outputs, on the free tier. `gemini-3.8-flash` is a stronger free option for `REPAIR_MODEL`. |
+| `LLM_REASONING_EFFORT` | same files | Gemini thinking level: `none`/`low`/`medium`/`high` (default `low`). |
+| `LLM_BILLING_TIER` | same files | `free` records free-tier Gemini calls at $0; set `paid` once billing is enabled so cost estimates use `pricing.json`. |
+| `LLM_DAILY_BUDGET_USD` | same files | Hard spend cap counted in Redis (matters on the paid tier); the extractor refuses work after it. |
+| `services/extractor/pricing.json` | repo | Paid-tier prices and the list of free-tier models; update if Google changes them. |
+
+**Free-tier caveats, read before using real invoices:**
+- Google's pricing page says free-tier prompts and responses **are used to improve Google's products**.
+  That is fine for this repo's synthetic invoices, but enable billing (paid tier) before processing real
+  customer invoices.
+- Free-tier quotas (requests per minute/day) apply per project; see your live limits at
+  aistudio.google.com → Rate limits. The client retries 429s with exponential backoff, and a 150-case
+  eval needs roughly 150–450 requests.
+
+**OpenAI (optional alternative):** set `LLM_PROVIDER=openai`, `OPENAI_API_KEY`, `LLM_BILLING_TIER=paid`
+and an OpenAI model id (e.g. `gpt-6-luna`, see D-007).
 
 ## 2. Cloudinary (file storage)
 
@@ -47,7 +61,7 @@ Cloudinary, and (3) deploy to AWS.
 |---|---|---|
 | Push the repo | github.com | CI (`ci.yml`) runs on every push and pull request. |
 | GHCR images | automatic | `images.yml` pushes `ghcr.io/<owner>/invoiceiq-{api,extractor,nginx}` with the built-in `GITHUB_TOKEN`. Make the three packages **public** (Package settings → Change visibility) or give the server a token with `read:packages` (`GHCR_USER`/`GHCR_TOKEN` env when running `deploy.sh`). |
-| `OPENAI_API_KEY` secret | Settings → Secrets and variables → Actions | Only for the manual `eval-live` workflow. |
+| `GEMINI_API_KEY` secret | Settings → Secrets and variables → Actions | Only for the manual `eval-live` workflow (or `OPENAI_API_KEY` with variable `LLM_PROVIDER=openai`). |
 
 ## 5. Secrets you generate yourself
 

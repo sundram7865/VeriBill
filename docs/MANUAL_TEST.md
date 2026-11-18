@@ -1,7 +1,7 @@
 # Manual browser test (about 10 minutes)
 
 Prerequisites: the stack is running (`docker compose up --build`), the demo users exist
-(`pnpm seed`), sample invoices are optionally uploaded (`pnpm seed:samples`), and for real extractions `OPENAI_API_KEY` is set in `.env`. Without a key every
+(`pnpm seed`), sample invoices are optionally uploaded (`pnpm seed:samples`), and for real extractions `GEMINI_API_KEY` (free) is set in `.env`. Without a key every
 upload ends as **failed** with "llm_not_configured"; steps 1–3, 8 and 9 still work.
 
 1. **Login.** Open http://localhost:3000. You are sent to `/login`. Sign in as

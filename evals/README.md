@@ -4,7 +4,7 @@
 python -m evals.generate                      # 150 seeded synthetic cases -> evals/fixtures/generated/
 python -m evals.run --extractor dummy         # harness sanity check (scores ~0)
 python -m evals.run --extractor oracle        # LLM replaced by ground truth: measures the rest
-EVAL_MODE=record OPENAI_API_KEY=... EXTRACT_MODEL=gpt-6-luna REPAIR_MODEL=gpt-6-luna \
+EVAL_MODE=record GEMINI_API_KEY=... EXTRACT_MODEL=gemini-3.5-flash-lite REPAIR_MODEL=gemini-3.5-flash-lite \
   python -m evals.run --extractor pipeline    # live model, responses saved to evals/llm_cache/
 EVAL_MODE=replay python -m evals.run --extractor pipeline   # offline replay of the recordings
 python -m evals.report <results.json> [--before <results-r0.json>]   # tables for EVAL_REPORT.md

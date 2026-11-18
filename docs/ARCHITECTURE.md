@@ -12,7 +12,7 @@ flowchart LR
   W[Worker<br/>BullMQ consumer] --> R
   W <-->|download bytes| C
   W -->|POST /v1/extract<br/>file bytes + metadata<br/>service token, private network| X[Extractor<br/>FastAPI + LangGraph]
-  X -->|structured outputs| O[OpenAI]
+  X -->|structured outputs| O[Gemini API<br/>or OpenAI]
   X -->|daily spend counter| R
   W --> P
   M[MCP server<br/>stdio, read-only] -->|GET + read-only token| A
