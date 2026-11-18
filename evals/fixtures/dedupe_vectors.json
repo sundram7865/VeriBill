@@ -1,0 +1,32 @@
+[
+  {
+    "supplier_gstin": "27AAPFU0939F1ZV",
+    "invoice_number": "INV/2025-26/0042",
+    "grand_total": 118000,
+    "key": "00dca1ca4652071d62f8bc21729670f6ae30d7ddd1e1ec00d89440cc9d186dd5"
+  },
+  {
+    "supplier_gstin": "27 aapfu0939f1zv",
+    "invoice_number": "inv-2025-26-0042",
+    "grand_total": 118000.0,
+    "key": "00dca1ca4652071d62f8bc21729670f6ae30d7ddd1e1ec00d89440cc9d186dd5"
+  },
+  {
+    "supplier_gstin": "27AAPFU0939F1ZV",
+    "invoice_number": "INV/2025-26/0043",
+    "grand_total": 118000,
+    "key": "dfcb27a75cf5f42179dd5d7703fe8c04a2ad220764b019433d70432d70485277"
+  },
+  {
+    "supplier_gstin": "29ABCDE1234F1Z5",
+    "invoice_number": "A1230042",
+    "grand_total": 1234.5,
+    "key": "a8942fe3f29235eff21a76394f3505748856e7bfa6b519e4f10c4246af21d012"
+  },
+  {
+    "supplier_gstin": null,
+    "invoice_number": "A1",
+    "grand_total": 10,
+    "key": null
+  }
+]
