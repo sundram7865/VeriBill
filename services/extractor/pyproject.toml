@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "invoiceiq-extractor"
+version = "0.1.0"
+description = "InvoiceIQ extraction service: parse, extract, ground, validate, repair, decide."
+requires-python = ">=3.12"
+
+[tool.setuptools.packages.find]
+include = ["extractor*"]
+
+[tool.setuptools.package-data]
+extractor = ["data/*.json", "prompts/*.md"]
+
+# Ruff settings live in the repository's root ruff.toml.
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "ocr: needs the tesseract binary (skipped automatically when missing)",
+  "redis: needs a reachable Redis at REDIS_URL",
+]
