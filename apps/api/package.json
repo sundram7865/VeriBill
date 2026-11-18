@@ -1,0 +1,52 @@
+{
+  "name": "@invoiceiq/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "InvoiceIQ product API (Express) and BullMQ worker.",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "dev:worker": "tsx watch src/worker.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "start:worker": "node dist/worker.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "prisma:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "seed": "tsx src/scripts/seed.ts",
+    "e2e": "tsx src/scripts/e2eUpload.ts",
+    "export:eval": "tsx src/scripts/exportEval.ts",
+    "mint:mcp-token": "tsx src/scripts/mintMcpToken.ts",
+    "seed:samples": "tsx src/scripts/uploadSamples.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "bullmq": "5.81.5",
+    "cloudinary": "2.11.0",
+    "cookie-parser": "1.4.7",
+    "express": "5.3.0",
+    "ioredis": "5.11.1",
+    "jsonwebtoken": "9.0.3",
+    "multer": "2.5.0",
+    "pino": "9.14.0",
+    "pino-http": "10.5.0",
+    "prisma": "6.19.3",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@types/cookie-parser": "1.4.10",
+    "@types/express": "5.0.6",
+    "@types/jsonwebtoken": "9.0.10",
+    "@types/multer": "2.3.0",
+    "@types/node": "22.20.5",
+    "eslint": "9.39.5",
+    "globals": "17.14.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.73.0",
+    "vitest": "3.2.7"
+  }
+}
