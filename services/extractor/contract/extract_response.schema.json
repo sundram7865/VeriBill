@@ -1,0 +1,655 @@
+{
+  "$defs": {
+    "FieldOut": {
+      "additionalProperties": false,
+      "properties": {
+        "bbox": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "[x0, y0, x1, y1] as fractions of the page",
+          "title": "Bbox"
+        },
+        "confidence": {
+          "title": "Confidence",
+          "type": "number"
+        },
+        "grounded": {
+          "title": "Grounded",
+          "type": "boolean"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/IssueOut"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Page"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "path",
+        "value",
+        "confidence",
+        "page",
+        "bbox",
+        "grounded",
+        "issues"
+      ],
+      "title": "FieldOut",
+      "type": "object"
+    },
+    "Header": {
+      "additionalProperties": false,
+      "properties": {
+        "buyer_gstin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "15-character GSTIN exactly as printed",
+          "title": "Buyer Gstin"
+        },
+        "buyer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Buyer Name"
+        },
+        "currency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "ISO currency code, e.g. INR",
+          "title": "Currency"
+        },
+        "invoice_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "ISO date YYYY-MM-DD",
+          "title": "Invoice Date"
+        },
+        "invoice_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Invoice Number"
+        },
+        "place_of_supply": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Place of supply text as printed",
+          "title": "Place Of Supply"
+        },
+        "supplier_gstin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "15-character GSTIN exactly as printed",
+          "title": "Supplier Gstin"
+        },
+        "supplier_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supplier Name"
+        }
+      },
+      "required": [
+        "supplier_name",
+        "supplier_gstin",
+        "buyer_name",
+        "buyer_gstin",
+        "invoice_number",
+        "invoice_date",
+        "place_of_supply",
+        "currency"
+      ],
+      "title": "Header",
+      "type": "object"
+    },
+    "Invoice": {
+      "additionalProperties": false,
+      "properties": {
+        "header": {
+          "$ref": "#/$defs/Header"
+        },
+        "line_items": {
+          "items": {
+            "$ref": "#/$defs/LineItem"
+          },
+          "title": "Line Items",
+          "type": "array"
+        },
+        "totals": {
+          "$ref": "#/$defs/Totals"
+        }
+      },
+      "required": [
+        "header",
+        "line_items",
+        "totals"
+      ],
+      "title": "Invoice",
+      "type": "object"
+    },
+    "IssueOut": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warn"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "code",
+        "severity",
+        "message"
+      ],
+      "title": "IssueOut",
+      "type": "object"
+    },
+    "LineItem": {
+      "additionalProperties": false,
+      "properties": {
+        "cgst_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cgst Amount"
+        },
+        "cgst_rate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Percent, e.g. 9 for 9%",
+          "title": "Cgst Rate"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Description"
+        },
+        "discount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Discount amount for the line, not a percent",
+          "title": "Discount"
+        },
+        "hsn_sac": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "HSN or SAC code digits as printed",
+          "title": "Hsn Sac"
+        },
+        "igst_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Igst Amount"
+        },
+        "igst_rate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Percent, e.g. 18 for 18%",
+          "title": "Igst Rate"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Quantity"
+        },
+        "rate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Unit price before tax",
+          "title": "Rate"
+        },
+        "sgst_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sgst Amount"
+        },
+        "sgst_rate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Percent, e.g. 9 for 9%",
+          "title": "Sgst Rate"
+        },
+        "taxable_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Taxable Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "description",
+        "hsn_sac",
+        "quantity",
+        "unit",
+        "rate",
+        "discount",
+        "taxable_value",
+        "cgst_rate",
+        "cgst_amount",
+        "sgst_rate",
+        "sgst_amount",
+        "igst_rate",
+        "igst_amount"
+      ],
+      "title": "LineItem",
+      "type": "object"
+    },
+    "Totals": {
+      "additionalProperties": false,
+      "properties": {
+        "grand_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Grand Total"
+        },
+        "round_off": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Signed round-off amount; 0 if not printed",
+          "title": "Round Off"
+        },
+        "subtotal": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Sum of taxable values before tax",
+          "title": "Subtotal"
+        },
+        "total_tax": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Total Tax"
+        }
+      },
+      "required": [
+        "subtotal",
+        "total_tax",
+        "round_off",
+        "grand_total"
+      ],
+      "title": "Totals",
+      "type": "object"
+    },
+    "UsageOut": {
+      "additionalProperties": false,
+      "properties": {
+        "cost_usd": {
+          "title": "Cost Usd",
+          "type": "number"
+        },
+        "from_cache": {
+          "title": "From Cache",
+          "type": "boolean"
+        },
+        "latency_ms": {
+          "title": "Latency Ms",
+          "type": "number"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        },
+        "tokens_in": {
+          "title": "Tokens In",
+          "type": "integer"
+        },
+        "tokens_out": {
+          "title": "Tokens Out",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "purpose",
+        "model",
+        "tokens_in",
+        "tokens_out",
+        "cost_usd",
+        "from_cache",
+        "latency_ms"
+      ],
+      "title": "UsageOut",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt": {
+      "title": "Attempt",
+      "type": "integer"
+    },
+    "cost_usd": {
+      "title": "Cost Usd",
+      "type": "number"
+    },
+    "decision": {
+      "enum": [
+        "auto_approve",
+        "needs_review",
+        "reject"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "decision_reason": {
+      "title": "Decision Reason",
+      "type": "string"
+    },
+    "document_confidence": {
+      "title": "Document Confidence",
+      "type": "number"
+    },
+    "document_id": {
+      "title": "Document Id",
+      "type": "string"
+    },
+    "fields": {
+      "items": {
+        "$ref": "#/$defs/FieldOut"
+      },
+      "title": "Fields",
+      "type": "array"
+    },
+    "invoice": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Invoice"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/IssueOut"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "latency_ms": {
+      "title": "Latency Ms",
+      "type": "integer"
+    },
+    "llm_calls": {
+      "items": {
+        "$ref": "#/$defs/UsageOut"
+      },
+      "title": "Llm Calls",
+      "type": "array"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Model"
+    },
+    "node_timings": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Node Timings",
+      "type": "object"
+    },
+    "pages": {
+      "title": "Pages",
+      "type": "integer"
+    },
+    "pipeline_version": {
+      "title": "Pipeline Version",
+      "type": "string"
+    },
+    "repair_attempts": {
+      "title": "Repair Attempts",
+      "type": "integer"
+    },
+    "required_grounded": {
+      "title": "Required Grounded",
+      "type": "boolean"
+    },
+    "tokens_in": {
+      "title": "Tokens In",
+      "type": "integer"
+    },
+    "tokens_out": {
+      "title": "Tokens Out",
+      "type": "integer"
+    },
+    "used_ocr": {
+      "title": "Used Ocr",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "document_id",
+    "attempt",
+    "pipeline_version",
+    "decision",
+    "decision_reason",
+    "document_confidence",
+    "required_grounded",
+    "pages",
+    "used_ocr",
+    "invoice",
+    "fields",
+    "issues",
+    "repair_attempts",
+    "model",
+    "tokens_in",
+    "tokens_out",
+    "cost_usd",
+    "latency_ms",
+    "node_timings",
+    "llm_calls"
+  ],
+  "title": "ExtractResponse",
+  "type": "object"
+}

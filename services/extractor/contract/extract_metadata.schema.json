@@ -1,0 +1,114 @@
+{
+  "$defs": {
+    "FewShotCorrection": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "After"
+        },
+        "before": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Before"
+        },
+        "field_path": {
+          "title": "Field Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_path",
+        "before",
+        "after"
+      ],
+      "title": "FewShotCorrection",
+      "type": "object"
+    },
+    "FewShotSupplier": {
+      "additionalProperties": false,
+      "properties": {
+        "corrections": {
+          "items": {
+            "$ref": "#/$defs/FewShotCorrection"
+          },
+          "title": "Corrections",
+          "type": "array"
+        },
+        "supplier_gstin": {
+          "title": "Supplier Gstin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "supplier_gstin",
+        "corrections"
+      ],
+      "title": "FewShotSupplier",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The JSON part of the multipart request.",
+  "properties": {
+    "attempt": {
+      "minimum": 1,
+      "title": "Attempt",
+      "type": "integer"
+    },
+    "document_id": {
+      "title": "Document Id",
+      "type": "string"
+    },
+    "few_shot": {
+      "items": {
+        "$ref": "#/$defs/FewShotSupplier"
+      },
+      "title": "Few Shot",
+      "type": "array"
+    },
+    "filename": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Filename"
+    },
+    "reference_date": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reference Date"
+    }
+  },
+  "required": [
+    "document_id",
+    "attempt"
+  ],
+  "title": "ExtractMetadata",
+  "type": "object"
+}
