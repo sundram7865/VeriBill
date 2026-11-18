@@ -4,7 +4,7 @@
         --out evals/results/<timestamp>.json
 
 EVAL_MODE (live | record | replay, default replay) controls the LLM client for the 'pipeline'
-extractor. Without OPENAI_API_KEY only replay (from saved recordings) can run.
+extractor. Without an API key (GEMINI_API_KEY by default) only replay can run.
 """
 
 from __future__ import annotations

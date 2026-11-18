@@ -32,7 +32,10 @@ def _env_int(name: str, default: int) -> int:
 class Settings:
     service_token: str | None = None
     llm_mode: str = "live"  # live | record | replay
+    llm_provider: str = "gemini"  # gemini | openai
+    gemini_api_key: str | None = None
     openai_api_key: str | None = None
+    billing_tier: str = "free"  # free | paid: free-tier Gemini calls cost $0
     extract_model: str | None = None
     repair_model: str | None = None
     reasoning_effort: str | None = None
@@ -63,7 +66,10 @@ def load_settings() -> Settings:
     return Settings(
         service_token=_env_str("EXTRACTOR_SERVICE_TOKEN"),
         llm_mode=_env_str("LLM_MODE", "live") or "live",
+        llm_provider=(_env_str("LLM_PROVIDER", "gemini") or "gemini").lower(),
+        gemini_api_key=_env_str("GEMINI_API_KEY"),
         openai_api_key=_env_str("OPENAI_API_KEY"),
+        billing_tier=(_env_str("LLM_BILLING_TIER", "free") or "free").lower(),
         extract_model=_env_str("EXTRACT_MODEL"),
         repair_model=_env_str("REPAIR_MODEL"),
         reasoning_effort=_env_str("LLM_REASONING_EFFORT"),

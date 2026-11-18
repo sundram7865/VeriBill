@@ -20,7 +20,7 @@ def deps_from_settings(settings: Settings, client: LLMClient, **overrides) -> Pi
         raise LLMNotConfiguredError("EXTRACT_MODEL is not set")
     values = {
         "client": client,
-        "pricing": Pricing(settings.pricing_path),
+        "pricing": Pricing(settings.pricing_path, settings.billing_tier),
         "extract_model": settings.extract_model,
         "repair_model": settings.repair_model or settings.extract_model,
         "reasoning_effort": settings.reasoning_effort,

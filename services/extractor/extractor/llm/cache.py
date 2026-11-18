@@ -76,6 +76,6 @@ class ReplayClient:
         if record is None:
             raise ReplayMissError(
                 f"No recording for this {request.purpose} request. Run once with "
-                "EVAL_MODE=record and an OPENAI_API_KEY to create it."
+                "EVAL_MODE=record and an API key (GEMINI_API_KEY by default) to create it."
             )
         return _from_record(record)

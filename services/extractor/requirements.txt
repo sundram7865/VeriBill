@@ -4,6 +4,7 @@ uvicorn==0.54.0
 pydantic==2.14.3
 python-multipart==0.0.34
 langgraph==1.2.22
+google-genai==3.5.0
 openai==3.54.0
 pymupdf==2.1
 pytesseract==0.3.13

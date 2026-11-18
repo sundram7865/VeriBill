@@ -1,7 +1,7 @@
 """The invoice schema: what the LLM must return and what ground truth looks like.
 
-Every field is required but nullable. OpenAI strict structured outputs need every key present,
-and "null" is how the model says "not on the document" instead of guessing.
+Every field is required but nullable. Strict structured outputs (Gemini or OpenAI) work best with
+every key present, and "null" is how the model says "not on the document" instead of guessing.
 """
 
 from __future__ import annotations

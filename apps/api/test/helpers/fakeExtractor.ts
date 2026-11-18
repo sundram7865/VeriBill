@@ -68,7 +68,7 @@ export function fakeResponse(
     fields,
     issues: fields.flatMap((f) => f.issues),
     repair_attempts: 0,
-    model: 'gpt-6-luna',
+    model: 'gemini-3.5-flash-lite',
     tokens_in: 2400,
     tokens_out: 600,
     cost_usd: 0.00054,

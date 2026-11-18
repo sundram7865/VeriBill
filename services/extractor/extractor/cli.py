@@ -3,7 +3,8 @@
     python -m extractor.cli invoice.pdf [--mode live|record|replay] [--max-repairs 2]
                                         [--plain] [--reference-date 2026-11-01]
 
-Needs EXTRACT_MODEL (and OPENAI_API_KEY for live/record). Prints the response JSON.
+Needs EXTRACT_MODEL and, for live/record, GEMINI_API_KEY (or OPENAI_API_KEY with
+LLM_PROVIDER=openai). Prints the response JSON.
 """
 
 from __future__ import annotations
