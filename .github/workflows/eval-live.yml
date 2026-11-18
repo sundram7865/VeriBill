@@ -1,0 +1,52 @@
+name: eval-live
+
+# Manual live eval against the real model. Costs money: gpt-6-luna on the 150-case suite is a
+# few cents (estimate; check pricing.json), and LLM_DAILY_BUDGET_USD caps it.
+# Record mode saves every response so later runs (and CI) can replay them offline.
+on:
+  workflow_dispatch:
+    inputs:
+      split:
+        description: 'dev | test | all'
+        default: 'all'
+      mode:
+        description: 'record (save responses) | live'
+        default: 'record'
+      max_repairs:
+        description: 'repair attempts (0 = before the repair loop)'
+        default: '2'
+
+jobs:
+  live-eval:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      EXTRACT_MODEL: ${{ vars.EXTRACT_MODEL || 'gpt-6-luna' }}
+      REPAIR_MODEL: ${{ vars.REPAIR_MODEL || 'gpt-6-luna' }}
+      LLM_REASONING_EFFORT: low
+      LLM_DAILY_BUDGET_USD: '2'
+      EVAL_MODE: ${{ inputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng
+      - run: |
+          pip install -r services/extractor/requirements-dev.txt -r evals/requirements.txt
+          pip install --no-deps -e services/extractor
+      - run: python -m evals.generate
+      - name: Run the pipeline with the real model
+        run: |
+          python -m evals.run --extractor pipeline --split ${{ inputs.split }} \
+            --max-repairs ${{ inputs.max_repairs }} \
+            --out evals/results/live-${{ inputs.split }}-r${{ inputs.max_repairs }}.json
+      - run: python -m evals.report evals/results/live-${{ inputs.split }}-r${{ inputs.max_repairs }}.json >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-eval-${{ github.run_id }}
+          path: |
+            evals/results/live-*.json
+            evals/llm_cache/
