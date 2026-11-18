@@ -1,0 +1,276 @@
+// InvoiceIQ data model. Every tenant-scoped table carries tenant_id; all access goes
+// through repositories in src/modules/**/*.repository.ts that require a tenantId.
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  reviewer
+}
+
+enum DocumentStatus {
+  uploaded
+  processing
+  auto_approved
+  needs_review
+  approved
+  rejected
+  failed
+}
+
+enum ReviewTaskType {
+  needs_review
+  audit
+}
+
+enum ReviewTaskStatus {
+  open
+  closed
+}
+
+enum ReviewOutcome {
+  approved
+  rejected
+}
+
+model Tenant {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users     User[]
+  documents Document[]
+  suppliers Supplier[]
+
+  @@map("tenants")
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  tenantId     String   @map("tenant_id") @db.Uuid
+  email        String   @unique
+  name         String
+  passwordHash String   @map("password_hash")
+  role         UserRole
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+
+  @@index([tenantId])
+  @@map("users")
+}
+
+// Opaque refresh tokens are stored hashed. A family groups one login's rotations so that
+// replaying an already-rotated token revokes the whole family (token theft signal).
+model RefreshToken {
+  id         String    @id @default(uuid()) @db.Uuid
+  tenantId   String    @map("tenant_id") @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash")
+  familyId   String    @map("family_id") @db.Uuid
+  expiresAt  DateTime  @map("expires_at")
+  revokedAt  DateTime? @map("revoked_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@map("refresh_tokens")
+}
+
+model Document {
+  id                  String         @id @default(uuid()) @db.Uuid
+  tenantId            String         @map("tenant_id") @db.Uuid
+  uploadedById        String?        @map("uploaded_by_id") @db.Uuid
+  storageProvider     String         @map("storage_provider")
+  storagePublicId     String         @map("storage_public_id")
+  storageResourceType String         @map("storage_resource_type")
+  originalName        String         @map("original_name")
+  mime                String
+  sizeBytes           Int            @map("size_bytes")
+  pages               Int?
+  status              DocumentStatus @default(uploaded)
+  // sha256 of the file bytes: catches the exact same file uploaded twice.
+  contentHash         String         @map("content_hash")
+  // sha256(supplier GSTIN | normalized invoice number | grand total): catches the same invoice re-scanned.
+  dedupeKey           String?        @map("dedupe_key")
+  duplicateOfId       String?        @map("duplicate_of") @db.Uuid
+  processingAttempt   Int            @default(0) @map("processing_attempt")
+  documentConfidence  Float?         @map("document_confidence")
+  errorMessage        String?        @map("error_message")
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  duplicateOf     Document?        @relation("DocumentDuplicates", fields: [duplicateOfId], references: [id], onDelete: SetNull)
+  duplicates      Document[]       @relation("DocumentDuplicates")
+  extractionRuns  ExtractionRun[]
+  extractedFields ExtractedField[]
+  reviewTasks     ReviewTask[]
+  invoice         Invoice?
+
+  @@index([tenantId, status])
+  @@index([tenantId, contentHash])
+  @@index([tenantId, dedupeKey])
+  @@index([tenantId, createdAt])
+  @@map("documents")
+}
+
+model ExtractionRun {
+  id                 String   @id @default(uuid()) @db.Uuid
+  tenantId           String   @map("tenant_id") @db.Uuid
+  documentId         String   @map("document_id") @db.Uuid
+  // Processing attempt for this document (1 for the first run, +1 per reprocess).
+  // Unique with documentId so a retried queue job cannot store the same run twice.
+  attempt            Int
+  model              String
+  tokensIn           Int      @map("tokens_in")
+  tokensOut          Int      @map("tokens_out")
+  costUsd            Float    @map("cost_usd")
+  latencyMs          Int      @map("latency_ms")
+  nodeTimings        Json     @map("node_timings")
+  repairAttempts     Int      @map("repair_attempts")
+  decision           String
+  documentConfidence Float    @map("document_confidence")
+  result             Json
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  document Document         @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  fields   ExtractedField[]
+
+  @@unique([documentId, attempt])
+  @@index([tenantId, createdAt])
+  @@map("extraction_runs")
+}
+
+model ExtractedField {
+  id         String  @id @default(uuid()) @db.Uuid
+  tenantId   String  @map("tenant_id") @db.Uuid
+  documentId String  @map("document_id") @db.Uuid
+  runId      String  @map("run_id") @db.Uuid
+  // Dotted path, e.g. "header.supplier_gstin" or "line_items.2.taxable_value".
+  path       String
+  // Current value: starts as the model's value, replaced by reviewer corrections (history in corrections).
+  value      String?
+  confidence Float
+  page       Int?
+  bbox       Json?
+  issues     Json    @default("[]")
+
+  document Document      @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  run      ExtractionRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@unique([runId, path])
+  @@index([tenantId, documentId])
+  @@map("extracted_fields")
+}
+
+model ReviewTask {
+  id           String           @id @default(uuid()) @db.Uuid
+  tenantId     String           @map("tenant_id") @db.Uuid
+  documentId   String           @map("document_id") @db.Uuid
+  type         ReviewTaskType
+  status       ReviewTaskStatus @default(open)
+  outcome      ReviewOutcome?
+  assignedToId String?          @map("assigned_to") @db.Uuid
+  openedAt     DateTime         @default(now()) @map("opened_at")
+  closedAt     DateTime?        @map("closed_at")
+
+  document    Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  corrections Correction[]
+
+  @@index([tenantId, status, type])
+  @@index([documentId])
+  @@map("review_tasks")
+}
+
+model Correction {
+  id                String   @id @default(uuid()) @db.Uuid
+  tenantId          String   @map("tenant_id") @db.Uuid
+  reviewTaskId      String   @map("review_task_id") @db.Uuid
+  documentId        String   @map("document_id") @db.Uuid
+  fieldPath         String   @map("field_path")
+  before            String?
+  after             String?
+  reason            String?
+  // True when a validator had flagged this field before the human fixed it (validator catch rate).
+  hadValidatorIssue Boolean  @default(false) @map("had_validator_issue")
+  createdById       String?  @map("created_by_id") @db.Uuid
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  reviewTask ReviewTask @relation(fields: [reviewTaskId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt])
+  @@index([documentId])
+  @@map("corrections")
+}
+
+// Normalized approved data, used for export, search and duplicate checks.
+model Invoice {
+  id            String    @id @default(uuid()) @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  documentId    String    @unique @map("document_id") @db.Uuid
+  supplierId    String?   @map("supplier_id") @db.Uuid
+  supplierName  String?   @map("supplier_name")
+  supplierGstin String?   @map("supplier_gstin")
+  buyerName     String?   @map("buyer_name")
+  buyerGstin    String?   @map("buyer_gstin")
+  invoiceNumber String?   @map("invoice_number")
+  invoiceDate   DateTime? @map("invoice_date") @db.Date
+  placeOfSupply String?   @map("place_of_supply")
+  currency      String?
+  subtotal      Decimal?  @db.Decimal(14, 2)
+  totalTax      Decimal?  @map("total_tax") @db.Decimal(14, 2)
+  roundOff      Decimal?  @map("round_off") @db.Decimal(14, 2)
+  grandTotal    Decimal?  @map("grand_total") @db.Decimal(14, 2)
+  lineItems     Json      @map("line_items")
+  dedupeKey     String?   @map("dedupe_key")
+  approvedVia   String    @map("approved_via")
+  approvedAt    DateTime  @default(now()) @map("approved_at")
+
+  document Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  supplier Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, supplierGstin])
+  @@index([tenantId, invoiceDate])
+  @@index([tenantId, grandTotal])
+  @@map("invoices")
+}
+
+model Supplier {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  gstin     String
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invoices Invoice[]
+
+  @@unique([tenantId, gstin])
+  @@map("suppliers")
+}
+
+// Append-only, minimal: who did what to which entity. Never stores invoice contents.
+model AuditLog {
+  id         BigInt   @id @default(autoincrement())
+  tenantId   String   @map("tenant_id") @db.Uuid
+  actorId    String?  @map("actor_id") @db.Uuid
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  meta       Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([tenantId, createdAt])
+  @@map("audit_log")
+}
