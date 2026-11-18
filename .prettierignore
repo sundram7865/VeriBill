@@ -1,0 +1,13 @@
+node_modules
+.venv
+dist
+.next
+out
+coverage
+pnpm-lock.yaml
+evals
+services
+docs
+*.md
+apps/api/prisma/migrations
+apps/web/public/pdf.worker.min.mjs

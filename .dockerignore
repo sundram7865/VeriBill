@@ -1,0 +1,17 @@
+**/node_modules
+**/.next
+**/out
+**/dist
+**/coverage
+**/.data
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+.venv
+.git
+.github
+evals/fixtures/generated
+evals/results
+.env
+.env.*
+!.env.example

@@ -1,0 +1,43 @@
+# dependencies
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# builds
+dist/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# env and secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# local data
+.data/
+uploads/
+coverage/
+
+# eval outputs (results are kept only when referenced by docs; see evals/README.md)
+evals/fixtures/generated/
+evals/results/*.json
+!evals/results/.gitkeep
+!evals/results/README.md
+!evals/results/published/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# generated at install / build time
+apps/web/public/pdf.worker.min.mjs
+*.egg-info/
+services/extractor/llm_cache/
