@@ -14,19 +14,19 @@ WORKDIR /repo
 FROM base AS build
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json apps/api/
-RUN pnpm install --frozen-lockfile --filter @invoiceiq/api
+RUN pnpm install --frozen-lockfile --filter @veribill/api
 COPY apps/api apps/api
-RUN pnpm --filter @invoiceiq/api exec prisma generate \
-    && pnpm --filter @invoiceiq/api build
+RUN pnpm --filter @veribill/api exec prisma generate \
+    && pnpm --filter @veribill/api build
 
 # ---- runtime: production deps only; one image runs the api, the worker and migrations ----
 FROM base AS runtime
 ENV NODE_ENV=production
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json apps/api/
-RUN pnpm install --frozen-lockfile --prod --filter @invoiceiq/api
+RUN pnpm install --frozen-lockfile --prod --filter @veribill/api
 COPY apps/api/prisma apps/api/prisma
-RUN pnpm --filter @invoiceiq/api exec prisma generate
+RUN pnpm --filter @veribill/api exec prisma generate
 COPY --from=build /repo/apps/api/dist apps/api/dist
 WORKDIR /repo/apps/api
 RUN mkdir -p /repo/apps/api/.data && chown -R node:node /repo/apps/api/.data

@@ -1,8 +1,8 @@
-# InvoiceIQ
+# VeriBill
 
 **The LLM proposes, rules verify, humans handle the uncertain cases, and accuracy is measured.**
 
-InvoiceIQ is a multi-tenant platform for Indian GST invoices (PDF or image). An AI pipeline extracts
+VeriBill is a multi-tenant platform for Indian GST invoices (PDF or image). An AI pipeline extracts
 structured fields, deterministic validators check them, confident documents are auto-approved,
 uncertain ones go to a human review queue, and reviewer corrections become labelled data that
 measures accuracy.
@@ -67,8 +67,8 @@ python -m venv .venv && .venv/bin/pip install -r services/extractor/requirements
 pnpm install && pnpm seed:samples          # upload 8 sample invoices through the API
 ```
 
-Open http://localhost:3000 and sign in as `reviewer@demo.invoiceiq.test` / `demo-reviewer-password`
-(admin: `admin@demo.invoiceiq.test` / `demo-admin-password`). Without a `GEMINI_API_KEY` in `.env` (free from aistudio.google.com),
+Open http://localhost:3000 and sign in as `reviewer@demo.veribill.test` / `demo-reviewer-password`
+(admin: `admin@demo.veribill.test` / `demo-admin-password`). Without a `GEMINI_API_KEY` in `.env` (free from aistudio.google.com),
 uploads end as **failed** with a clear "llm_not_configured" reason; add a key (docs/SETUP.md) for
 real extractions. Manual browser test: docs/MANUAL_TEST.md.
 

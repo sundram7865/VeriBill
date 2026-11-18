@@ -28,7 +28,7 @@ export function AppShell({ children, wide = false }: { children: ReactNode; wide
     <div className="min-h-screen">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4">
-          <span className="font-semibold">InvoiceIQ</span>
+          <span className="font-semibold">VeriBill</span>
           <nav className="flex gap-4 text-sm">
             {NAV.map((item) => (
               <Link

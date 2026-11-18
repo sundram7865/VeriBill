@@ -16,19 +16,19 @@ jobs:
       postgres:
         image: pgvector/pgvector:0.8.1-pg16
         env:
-          POSTGRES_USER: invoiceiq
-          POSTGRES_PASSWORD: invoiceiq
-          POSTGRES_DB: invoiceiq_test
+          POSTGRES_USER: veribill
+          POSTGRES_PASSWORD: veribill
+          POSTGRES_DB: veribill_test
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U invoiceiq -d invoiceiq_test"
+          --health-cmd "pg_isready -U veribill -d veribill_test"
           --health-interval 5s --health-timeout 3s --health-retries 20
       redis:
         image: redis:7.4.6-alpine
         ports: ['6379:6379']
         options: --health-cmd "redis-cli ping" --health-interval 5s --health-retries 20
     env:
-      TEST_DATABASE_URL: postgresql://invoiceiq:invoiceiq@localhost:5432/invoiceiq_test
+      TEST_DATABASE_URL: postgresql://veribill:veribill@localhost:5432/veribill_test
       TEST_REDIS_URL: redis://localhost:6379
     steps:
       - uses: actions/checkout@v4
@@ -40,12 +40,12 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @invoiceiq/api exec prisma generate
+      - run: pnpm --filter @veribill/api exec prisma generate
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
-      - run: pnpm --filter @invoiceiq/web build
+      - run: pnpm --filter @veribill/web build
 
   python:
     runs-on: ubuntu-24.04
@@ -73,10 +73,10 @@ jobs:
     needs: python
     steps:
       - uses: actions/checkout@v4
-      - run: docker build --target dev -t invoiceiq-evals services/extractor
+      - run: docker build --target dev -t veribill-evals services/extractor
       - name: Generate suite and run the gate
         env:
-          RUN_IN_IMAGE: docker run --rm -v ${{ github.workspace }}:/repo -w /repo -e PYTHONPATH=/repo/services/extractor:/repo --entrypoint python invoiceiq-evals
+          RUN_IN_IMAGE: docker run --rm -v ${{ github.workspace }}:/repo -w /repo -e PYTHONPATH=/repo/services/extractor:/repo --entrypoint python veribill-evals
         run: |
           $RUN_IN_IMAGE -m evals.generate
           $RUN_IN_IMAGE -m evals.gate

@@ -8,7 +8,7 @@ Cloudinary, and (3) deploy to AWS.
 
 | What | Where it goes | Notes |
 |---|---|---|
-| `GEMINI_API_KEY` | `.env` (local), `/opt/invoiceiq/.env` (server), GitHub secret `GEMINI_API_KEY` (live eval workflow) | Free: sign in at aistudio.google.com → **Get API key** → create a key. No card needed for the free tier. |
+| `GEMINI_API_KEY` | `.env` (local), `/opt/veribill/.env` (server), GitHub secret `GEMINI_API_KEY` (live eval workflow) | Free: sign in at aistudio.google.com → **Get API key** → create a key. No card needed for the free tier. |
 | `LLM_PROVIDER` | same files | `gemini` (default) or `openai`. |
 | `EXTRACT_MODEL`, `REPAIR_MODEL` | same files; optionally GitHub *variables* of the same names | Default `gemini-3.5-flash-lite` (DECISIONS D-035): stable, structured outputs, on the free tier. `gemini-3.8-flash` is a stronger free option for `REPAIR_MODEL`. |
 | `LLM_REASONING_EFFORT` | same files | Gemini thinking level: `none`/`low`/`medium`/`high` (default `low`). |
@@ -35,8 +35,8 @@ and an OpenAI model id (e.g. `gpt-6-luna`, see D-007).
 3. Console → Settings → **Security**: enable **"Allow delivery of PDF and ZIP files"**. Free accounts
    block PDF delivery by default; without this, downloads of uploaded PDFs can fail with 401/404.
 4. Nothing else: files are uploaded as `raw` + `authenticated` assets under random ids in
-   `CLOUDINARY_FOLDER` (default `invoiceiq`), and are only fetched server-side with 2-minute signed
-   links. Use a different folder per environment (e.g. `invoiceiq-dev`).
+   `CLOUDINARY_FOLDER` (default `veribill`), and are only fetched server-side with 2-minute signed
+   links. Use a different folder per environment (e.g. `veribill-dev`).
 5. Verify after deploying: upload one invoice in the UI, then open it in the review screen. If the
    document ends as `failed` with "Cloudinary download failed with HTTP 401", recheck step 3.
 
@@ -60,7 +60,7 @@ and an OpenAI model id (e.g. `gpt-6-luna`, see D-007).
 | What | Where | Notes |
 |---|---|---|
 | Push the repo | github.com | CI (`ci.yml`) runs on every push and pull request. |
-| GHCR images | automatic | `images.yml` pushes `ghcr.io/<owner>/invoiceiq-{api,extractor,nginx}` with the built-in `GITHUB_TOKEN`. Make the three packages **public** (Package settings → Change visibility) or give the server a token with `read:packages` (`GHCR_USER`/`GHCR_TOKEN` env when running `deploy.sh`). |
+| GHCR images | automatic | `images.yml` pushes `ghcr.io/<owner>/veribill-{api,extractor,nginx}` with the built-in `GITHUB_TOKEN`. Make the three packages **public** (Package settings → Change visibility) or give the server a token with `read:packages` (`GHCR_USER`/`GHCR_TOKEN` env when running `deploy.sh`). |
 | `GEMINI_API_KEY` secret | Settings → Secrets and variables → Actions | Only for the manual `eval-live` workflow (or `OPENAI_API_KEY` with variable `LLM_PROVIDER=openai`). |
 
 ## 5. Secrets you generate yourself
@@ -75,5 +75,5 @@ Plus `SEED_ADMIN_PASSWORD` and `SEED_REVIEWER_PASSWORD` for the demo users creat
 
 ## 6. MCP server (optional, local)
 
-`pnpm --filter @invoiceiq/api mint:mcp-token -- <user email> 30` prints a 30-day read-only token. Put
-it in `INVOICEIQ_MCP_TOKEN` with `INVOICEIQ_API_URL` (see services/mcp/README.md).
+`pnpm --filter @veribill/api mint:mcp-token -- <user email> 30` prints a 30-day read-only token. Put
+it in `VERIBILL_MCP_TOKEN` with `VERIBILL_API_URL` (see services/mcp/README.md).

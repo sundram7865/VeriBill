@@ -2,10 +2,12 @@
 
 Each entry: decision, alternatives considered, reason. Newest at the bottom.
 
-## D-001 Keep the name InvoiceIQ
-- Alternatives: rename (e.g. "GSTLens").
-- Reason: the repo folder is already named InvoiceIQ and the name says what it does.
-
+## D-001 Name: VeriBill (renamed from InvoiceIQ)
+- Alternatives: InvoiceIQ (the working name), BillSure, GSTProof.
+- Reason: "verified bills" names what sets the project apart: the LLM only reads, deterministic
+  rules verify every value, and humans review the uncertain cases. It also reads as a distinct
+  project next to SupportPilot and AgentLens. Renamed in one commit (packages, images, compose
+  project, database, env vars and docs); the local folder name is unchanged.
 ## D-002 No git commits during the build (owner override)
 - Alternatives: conventional commit at the end of each phase (as the brief says).
 - Reason: the owner said "don't commit or push anything for now". PROGRESS.md is the checkpoint record.

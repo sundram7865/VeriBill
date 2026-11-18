@@ -1,4 +1,4 @@
-"""HTTP client for the InvoiceIQ API. GET only: the server has no way to change anything."""
+"""HTTP client for the VeriBill API. GET only: the server has no way to change anything."""
 
 from __future__ import annotations
 
@@ -19,11 +19,11 @@ class ApiConfig:
 
     @classmethod
     def from_env(cls) -> ApiConfig:
-        base_url = os.environ.get("INVOICEIQ_API_URL", "").rstrip("/")
-        token = os.environ.get("INVOICEIQ_MCP_TOKEN", "")
+        base_url = os.environ.get("VERIBILL_API_URL", "").rstrip("/")
+        token = os.environ.get("VERIBILL_MCP_TOKEN", "")
         if not base_url or not token:
             raise ApiError(
-                "Set INVOICEIQ_API_URL (e.g. http://127.0.0.1:4000/api) and INVOICEIQ_MCP_TOKEN "
+                "Set VERIBILL_API_URL (e.g. http://127.0.0.1:4000/api) and VERIBILL_MCP_TOKEN "
                 "(create one with: pnpm mint:mcp-token -- <email>)"
             )
         return cls(base_url, token)

@@ -3,8 +3,8 @@ import asyncio
 import httpx
 import pytest
 
-from invoiceiq_mcp import tools
-from invoiceiq_mcp.api_client import ApiClient, ApiConfig, ApiError
+from veribill_mcp import tools
+from veribill_mcp.api_client import ApiClient, ApiConfig, ApiError
 
 INVOICE = {
     "documentId": "doc-1",
@@ -98,14 +98,14 @@ def test_metrics_pass_through():
 
 
 def test_missing_configuration_is_explained(monkeypatch):
-    monkeypatch.delenv("INVOICEIQ_API_URL", raising=False)
-    monkeypatch.delenv("INVOICEIQ_MCP_TOKEN", raising=False)
-    with pytest.raises(ApiError, match="INVOICEIQ_MCP_TOKEN"):
+    monkeypatch.delenv("VERIBILL_API_URL", raising=False)
+    monkeypatch.delenv("VERIBILL_MCP_TOKEN", raising=False)
+    with pytest.raises(ApiError, match="VERIBILL_MCP_TOKEN"):
         ApiConfig.from_env()
 
 
 def test_server_exposes_exactly_the_four_read_only_tools():
-    from invoiceiq_mcp.server import mcp
+    from veribill_mcp.server import mcp
 
     listed = asyncio.run(mcp.list_tools())
     names = sorted(t.name for t in listed)

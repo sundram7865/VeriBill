@@ -18,7 +18,7 @@ from extractor.pipeline.parse import ParseError
 def create_app(settings: Settings | None = None, llm_client: LLMClient | None = None) -> FastAPI:
     configure_logging()
     settings = settings or load_settings()
-    app = FastAPI(title="InvoiceIQ extractor", docs_url=None, redoc_url=None, openapi_url=None)
+    app = FastAPI(title="VeriBill extractor", docs_url=None, redoc_url=None, openapi_url=None)
     app.state.settings = settings
     app.state.llm_client = llm_client or build_llm_client(settings)
     app.include_router(health.router)

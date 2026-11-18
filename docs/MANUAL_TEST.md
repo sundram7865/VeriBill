@@ -5,7 +5,7 @@ Prerequisites: the stack is running (`docker compose up --build`), the demo user
 upload ends as **failed** with "llm_not_configured"; steps 1–3, 8 and 9 still work.
 
 1. **Login.** Open http://localhost:3000. You are sent to `/login`. Sign in as
-   `reviewer@demo.invoiceiq.test` / `demo-reviewer-password`. Wrong password shows "Invalid email or password".
+   `reviewer@demo.veribill.test` / `demo-reviewer-password`. Wrong password shows "Invalid email or password".
 2. **Session survives reload.** Reload the page: you stay signed in (refresh cookie), no flash of the login form.
 3. **Upload.** On Documents, drop `evals/fixtures/generated/files/c0001.pdf` (generate the suite first:
    `python -m evals.generate`). Also try a `.txt` file renamed to `.pdf`: it is rejected with
@@ -23,8 +23,8 @@ upload ends as **failed** with "llm_not_configured"; steps 1–3, 8 and 9 still 
    appear in the queue as "audit sample". Approve one without changes.
 8. **Metrics.** Open Metrics: auto-approval rate, audited accuracy, field correction rate, validator catch
    rate, cost per document, p50/p95 latency, open tasks. Numbers change after steps 5–7.
-9. **Export (admin only).** Log out, sign in as `admin@demo.invoiceiq.test` / `demo-admin-password`.
+9. **Export (admin only).** Log out, sign in as `admin@demo.veribill.test` / `demo-admin-password`.
    Documents → Export approved: CSV and JSON download. As the reviewer the buttons are not shown and
    the API returns 403.
 10. **Tenant isolation (optional).** Create a second tenant's user with Prisma Studio
-    (`pnpm --filter @invoiceiq/api exec prisma studio`) and confirm they see none of the demo documents.
+    (`pnpm --filter @veribill/api exec prisma studio`) and confirm they see none of the demo documents.

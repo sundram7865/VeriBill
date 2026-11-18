@@ -1,1 +1,1 @@
-"""InvoiceIQ extraction service."""
+"""VeriBill extraction service."""

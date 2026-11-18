@@ -36,7 +36,7 @@ export default function LoginPage() {
         className="w-full max-w-sm space-y-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
       >
         <div>
-          <h1 className="text-xl font-semibold">InvoiceIQ</h1>
+          <h1 className="text-xl font-semibold">VeriBill</h1>
           <p className="text-sm text-slate-500">Sign in with the account your admin created.</p>
         </div>
         <label className="block text-sm">

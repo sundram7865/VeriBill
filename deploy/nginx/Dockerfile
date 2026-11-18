@@ -10,10 +10,10 @@ WORKDIR /repo
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/web/package.json apps/web/
 COPY apps/web/scripts apps/web/scripts
-RUN pnpm install --frozen-lockfile --filter @invoiceiq/web
+RUN pnpm install --frozen-lockfile --filter @veribill/web
 COPY apps/web apps/web
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN pnpm --filter @invoiceiq/web build
+RUN pnpm --filter @veribill/web build
 
 FROM nginx:1.28.0-alpine
 RUN apk add --no-cache openssl && rm /etc/nginx/conf.d/default.conf

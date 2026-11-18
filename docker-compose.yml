@@ -1,12 +1,12 @@
 # Local development stack: postgres, redis, extractor, migrate (one-off), api, worker, web.
 # Usage: cp .env.example .env && docker compose up --build
 # The extractor has no published port: it is reachable only on this private network.
-name: invoiceiq
+name: veribill
 
 x-api-env: &api-env
   NODE_ENV: development
   LOG_LEVEL: ${LOG_LEVEL:-info}
-  DATABASE_URL: postgresql://invoiceiq:invoiceiq@postgres:5432/invoiceiq?connect_timeout=30
+  DATABASE_URL: postgresql://veribill:veribill@postgres:5432/veribill?connect_timeout=30
   REDIS_URL: redis://redis:6379
   JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?set JWT_ACCESS_SECRET in .env}
   COOKIE_SECURE: 'false'
@@ -17,7 +17,7 @@ x-api-env: &api-env
   CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
   CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
   CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
-  CLOUDINARY_FOLDER: ${CLOUDINARY_FOLDER:-invoiceiq-dev}
+  CLOUDINARY_FOLDER: ${CLOUDINARY_FOLDER:-veribill-dev}
   WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-1}
   AUDIT_SAMPLE_RATE: ${AUDIT_SAMPLE_RATE:-0.1}
 
@@ -30,16 +30,16 @@ services:
   postgres:
     image: pgvector/pgvector:0.8.1-pg16
     environment:
-      POSTGRES_USER: invoiceiq
-      POSTGRES_PASSWORD: invoiceiq
-      POSTGRES_DB: invoiceiq
+      POSTGRES_USER: veribill
+      POSTGRES_PASSWORD: veribill
+      POSTGRES_DB: veribill
     ports:
       - '${POSTGRES_HOST_PORT:-5432}:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./deploy/postgres/dev-init.sql:/docker-entrypoint-initdb.d/01-dev-init.sql:ro
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U invoiceiq -d invoiceiq']
+      test: ['CMD-SHELL', 'pg_isready -U veribill -d veribill']
       interval: 5s
       timeout: 3s
       retries: 20
@@ -81,7 +81,7 @@ services:
 
   migrate:
     build: *api-build
-    image: invoiceiq-api:dev
+    image: veribill-api:dev
     command: ['pnpm', 'exec', 'prisma', 'migrate', 'deploy']
     environment: *api-env
     depends_on:
@@ -91,7 +91,7 @@ services:
 
   api:
     build: *api-build
-    image: invoiceiq-api:dev
+    image: veribill-api:dev
     environment: *api-env
     ports:
       - '${API_HOST_PORT:-4000}:4000'
@@ -105,7 +105,7 @@ services:
 
   worker:
     build: *api-build
-    image: invoiceiq-api:dev
+    image: veribill-api:dev
     command: ['node', 'dist/worker.js']
     environment: *api-env
     volumes:

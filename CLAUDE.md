@@ -1,4 +1,4 @@
-# CLAUDE.md — InvoiceIQ working rules
+# CLAUDE.md — VeriBill working rules
 
 These rules persist across sessions. They are copied from sections 1, 5, 9 and 10 of the
 original project brief, plus the owner's overrides at the top (which win on conflict).

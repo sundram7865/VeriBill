@@ -29,7 +29,7 @@ const envSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
-  CLOUDINARY_FOLDER: z.string().default('invoiceiq'),
+  CLOUDINARY_FOLDER: z.string().default('veribill'),
 
   MAX_UPLOAD_MB: z.coerce.number().positive().default(10),
   MAX_PAGES: z.coerce.number().int().positive().default(20),

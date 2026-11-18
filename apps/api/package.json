@@ -1,8 +1,8 @@
 {
-  "name": "@invoiceiq/api",
+  "name": "@veribill/api",
   "version": "0.1.0",
   "private": true,
-  "description": "InvoiceIQ product API (Express) and BullMQ worker.",
+  "description": "VeriBill product API (Express) and BullMQ worker.",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "dev:worker": "tsx watch src/worker.ts",

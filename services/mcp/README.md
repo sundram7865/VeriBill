@@ -1,4 +1,4 @@
-# InvoiceIQ MCP server (read-only)
+# VeriBill MCP server (read-only)
 
 Four tools over stdio, all backed by GET requests to the API with a read-only token:
 
@@ -16,10 +16,10 @@ non-GET requests for `scope: mcp:read` tokens with 403.
 
 ```bash
 pip install -r services/mcp/requirements.txt
-pnpm --filter @invoiceiq/api mint:mcp-token -- reviewer@demo.invoiceiq.test 30   # prints a token
-export INVOICEIQ_API_URL=http://127.0.0.1:4000/api
-export INVOICEIQ_MCP_TOKEN=<token>
-cd services/mcp && python -m invoiceiq_mcp.server
+pnpm --filter @veribill/api mint:mcp-token -- reviewer@demo.veribill.test 30   # prints a token
+export VERIBILL_API_URL=http://127.0.0.1:4000/api
+export VERIBILL_MCP_TOKEN=<token>
+cd services/mcp && python -m veribill_mcp.server
 ```
 
 Client configuration (e.g. Claude Desktop `claude_desktop_config.json`):
@@ -27,11 +27,11 @@ Client configuration (e.g. Claude Desktop `claude_desktop_config.json`):
 ```json
 {
   "mcpServers": {
-    "invoiceiq": {
+    "veribill": {
       "command": "python",
-      "args": ["-m", "invoiceiq_mcp.server"],
-      "cwd": "/path/to/InvoiceIQ/services/mcp",
-      "env": { "INVOICEIQ_API_URL": "http://127.0.0.1:4000/api", "INVOICEIQ_MCP_TOKEN": "<token>" }
+      "args": ["-m", "veribill_mcp.server"],
+      "cwd": "/path/to/VeriBill/services/mcp",
+      "env": { "VERIBILL_API_URL": "http://127.0.0.1:4000/api", "VERIBILL_MCP_TOKEN": "<token>" }
     }
   }
 }

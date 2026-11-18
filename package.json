@@ -1,7 +1,7 @@
 {
-  "name": "invoiceiq",
+  "name": "veribill",
   "private": true,
-  "description": "InvoiceIQ: the LLM proposes, rules verify, humans handle the uncertain cases, and accuracy is measured.",
+  "description": "VeriBill: the LLM proposes, rules verify, humans handle the uncertain cases, and accuracy is measured.",
   "packageManager": "pnpm@10.34.9",
   "engines": {
     "node": ">=22"
@@ -13,9 +13,9 @@
     "build": "pnpm -r build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "export:eval": "pnpm --filter @invoiceiq/api export:eval",
+    "export:eval": "pnpm --filter @veribill/api export:eval",
     "seed": "docker compose exec api node dist/scripts/seed.js",
-    "seed:samples": "pnpm --filter @invoiceiq/api seed:samples"
+    "seed:samples": "pnpm --filter @veribill/api seed:samples"
   },
   "devDependencies": {
     "prettier": "3.10.1",

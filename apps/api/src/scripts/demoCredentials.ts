@@ -13,11 +13,11 @@ export function demoCredentials(): { admin: Credentials; reviewer: Credentials }
   }
   return {
     admin: {
-      email: process.env.SEED_ADMIN_EMAIL ?? 'admin@demo.invoiceiq.test',
+      email: process.env.SEED_ADMIN_EMAIL ?? 'admin@demo.veribill.test',
       password: process.env.SEED_ADMIN_PASSWORD ?? 'demo-admin-password',
     },
     reviewer: {
-      email: process.env.SEED_REVIEWER_EMAIL ?? 'reviewer@demo.invoiceiq.test',
+      email: process.env.SEED_REVIEWER_EMAIL ?? 'reviewer@demo.veribill.test',
       password: process.env.SEED_REVIEWER_PASSWORD ?? 'demo-reviewer-password',
     },
   };

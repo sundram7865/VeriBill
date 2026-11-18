@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Pull the latest images and (re)start the stack. Run from /opt/invoiceiq.
+# Pull the latest images and (re)start the stack. Run from /opt/veribill.
 #   ./scripts/deploy.sh          # update
 #   ./scripts/deploy.sh --seed   # first deploy: also create the demo tenant and users
 set -euo pipefail

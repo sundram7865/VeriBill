@@ -1,8 +1,8 @@
 {
-  "name": "@invoiceiq/web",
+  "name": "@veribill/web",
   "version": "0.1.0",
   "private": true,
-  "description": "InvoiceIQ web app (Next.js static export served by Nginx).",
+  "description": "VeriBill web app (Next.js static export served by Nginx).",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",

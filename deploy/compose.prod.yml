@@ -1,13 +1,13 @@
 # Production stack for one EC2 instance. Images come from GitHub Container Registry.
-# Usage (on the server, in /opt/invoiceiq with a filled-in .env): ./scripts/deploy.sh
+# Usage (on the server, in /opt/veribill with a filled-in .env): ./scripts/deploy.sh
 # Only Nginx publishes ports. Postgres, Redis, the API and the extractor stay on the private
 # Docker network.
-name: invoiceiq
+name: veribill
 
 x-api-env: &api-env
   NODE_ENV: production
   LOG_LEVEL: ${LOG_LEVEL:-info}
-  DATABASE_URL: postgresql://invoiceiq:${POSTGRES_PASSWORD:?}@postgres:5432/invoiceiq?connect_timeout=30
+  DATABASE_URL: postgresql://veribill:${POSTGRES_PASSWORD:?}@postgres:5432/veribill?connect_timeout=30
   REDIS_URL: redis://redis:6379
   JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?}
   COOKIE_SECURE: 'true'
@@ -17,7 +17,7 @@ x-api-env: &api-env
   CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:?}
   CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:?}
   CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:?}
-  CLOUDINARY_FOLDER: ${CLOUDINARY_FOLDER:-invoiceiq}
+  CLOUDINARY_FOLDER: ${CLOUDINARY_FOLDER:-veribill}
   WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-1}
   AUDIT_SAMPLE_RATE: ${AUDIT_SAMPLE_RATE:-0.1}
 
@@ -30,12 +30,12 @@ services:
     image: pgvector/pgvector:0.8.1-pg16
     restart: unless-stopped
     environment:
-      POSTGRES_USER: invoiceiq
+      POSTGRES_USER: veribill
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
-      POSTGRES_DB: invoiceiq
+      POSTGRES_DB: veribill
     volumes: [pgdata:/var/lib/postgresql/data]
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U invoiceiq -d invoiceiq']
+      test: ['CMD-SHELL', 'pg_isready -U veribill -d veribill']
       interval: 10s
       retries: 10
     mem_limit: 256m
@@ -63,7 +63,7 @@ services:
     logging: *logging
 
   extractor:
-    image: ghcr.io/${GHCR_OWNER:?}/invoiceiq-extractor:${IMAGE_TAG:-latest}
+    image: ghcr.io/${GHCR_OWNER:?}/veribill-extractor:${IMAGE_TAG:-latest}
     restart: unless-stopped
     environment:
       LOG_LEVEL: ${LOG_LEVEL:-info}
@@ -85,7 +85,7 @@ services:
     logging: *logging
 
   migrate:
-    image: ghcr.io/${GHCR_OWNER:?}/invoiceiq-api:${IMAGE_TAG:-latest}
+    image: ghcr.io/${GHCR_OWNER:?}/veribill-api:${IMAGE_TAG:-latest}
     command: ['pnpm', 'exec', 'prisma', 'migrate', 'deploy']
     environment: *api-env
     depends_on:
@@ -94,7 +94,7 @@ services:
     logging: *logging
 
   api:
-    image: ghcr.io/${GHCR_OWNER:?}/invoiceiq-api:${IMAGE_TAG:-latest}
+    image: ghcr.io/${GHCR_OWNER:?}/veribill-api:${IMAGE_TAG:-latest}
     restart: unless-stopped
     environment: *api-env
     depends_on:
@@ -104,7 +104,7 @@ services:
     logging: *logging
 
   worker:
-    image: ghcr.io/${GHCR_OWNER:?}/invoiceiq-api:${IMAGE_TAG:-latest}
+    image: ghcr.io/${GHCR_OWNER:?}/veribill-api:${IMAGE_TAG:-latest}
     restart: unless-stopped
     command: ['node', 'dist/worker.js']
     environment: *api-env
@@ -125,7 +125,7 @@ services:
     logging: *logging
 
   nginx:
-    image: ghcr.io/${GHCR_OWNER:?}/invoiceiq-nginx:${IMAGE_TAG:-latest}
+    image: ghcr.io/${GHCR_OWNER:?}/veribill-nginx:${IMAGE_TAG:-latest}
     restart: unless-stopped
     environment:
       DOMAIN: ${DOMAIN:?}

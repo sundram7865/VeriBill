@@ -4,7 +4,7 @@ import { Providers } from '@/components/Providers';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'InvoiceIQ',
+  title: 'VeriBill',
   description: 'GST invoice extraction with validation, human review and measured accuracy.',
 };
 

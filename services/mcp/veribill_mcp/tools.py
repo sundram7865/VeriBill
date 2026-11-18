@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from invoiceiq_mcp.api_client import ApiClient
+from veribill_mcp.api_client import ApiClient
 
 
 def list_review_queue(api: ApiClient, kind: str | None = None, limit: int = 20) -> list[dict]:

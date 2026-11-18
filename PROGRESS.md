@@ -11,7 +11,7 @@ so this file is the record of what is done.
   daemon; build one service at a time. In Git Bash, prefix docker commands that use container paths
   with `MSYS_NO_PATHCONV=1`. Use `127.0.0.1`, not `localhost`, for host DB access.
 - Tesseract is not installed on the host: OCR tests skip locally and run in the eval image
-  (`invoiceiq-evals:latest`).
+  (`veribill-evals:latest`).
 - Run Vitest from `/D/InvoiceIQ/...` (uppercase drive); lowercase `d:` made Vitest find no files.
 
 ## Phase 0 — Scaffold — done

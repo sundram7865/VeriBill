@@ -2,7 +2,7 @@
 
 ## 30-second pitch
 
-InvoiceIQ reads Indian GST invoices (PDFs and scans) and turns them into structured data you can
+VeriBill reads Indian GST invoices (PDFs and scans) and turns them into structured data you can
 trust. An LLM reads each invoice once and returns what is printed; deterministic rules then check
 it: GSTIN checksums, CGST/SGST vs IGST, line and total arithmetic, dates. Every value has to be
 found again in the document's words, with a page and a box. Only documents that pass everything
@@ -210,7 +210,7 @@ invalid GSTINs, duplicates and prompt-injection text.
 
 ## Resume bullets (measured numbers only)
 
-1. Built **InvoiceIQ**, a multi-tenant GST-invoice extraction platform (Express, BullMQ, Postgres +
+1. Built **VeriBill**, a multi-tenant GST-invoice extraction platform (Express, BullMQ, Postgres +
    FastAPI, LangGraph) where an LLM only reads and deterministic validators, grounding and a bounded
    repair loop decide; in a 150-invoice seeded eval with oracle extraction, validators caught **20/20**
    injected total and GSTIN-checksum errors with **0** flawed invoices auto-approved.
@@ -229,4 +229,4 @@ invalid GSTINs, duplicates and prompt-injection text.
    families, tenant-scoped repositories and idempotent BullMQ processing with retry classification,
    covered by **49** Vitest tests on real Postgres and Redis (cross-tenant isolation, retries, duplicate
    detection, audits) and a Pydantic↔Zod contract test.
-   *Reproduce:* `docker compose up -d postgres redis && pnpm --filter @invoiceiq/api test` → "Tests 49 passed".
+   *Reproduce:* `docker compose up -d postgres redis && pnpm --filter @veribill/api test` → "Tests 49 passed".

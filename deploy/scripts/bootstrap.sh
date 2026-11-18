@@ -3,7 +3,7 @@
 # and the app directory. Run as the default "ubuntu" user: bash bootstrap.sh
 set -euo pipefail
 
-APP_DIR=/opt/invoiceiq
+APP_DIR=/opt/veribill
 SWAP_SIZE=${SWAP_SIZE:-2G}
 
 echo "==> Installing Docker Engine and the Compose plugin (official apt repository)"

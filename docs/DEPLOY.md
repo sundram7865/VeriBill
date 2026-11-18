@@ -13,7 +13,7 @@ Internet ──443──> nginx (static web + /api proxy + TLS) ──> api ─�
 ## 1. Build images (GitHub Actions)
 
 Push to `main`. `images.yml` builds and pushes
-`ghcr.io/<owner>/invoiceiq-api`, `-extractor` and `-nginx` tagged with the commit SHA and `latest`.
+`ghcr.io/<owner>/veribill-api`, `-extractor` and `-nginx` tagged with the commit SHA and `latest`.
 The nginx image contains the static web build, so production runs no Node process for the web app.
 
 ## 2. Prepare the server (once)
@@ -21,12 +21,12 @@ The nginx image contains the static web build, so production runs no Node proces
 ```bash
 ssh -i your-key.pem ubuntu@<elastic-ip>
 # copy deploy/ from the repo to the server, e.g. from your machine:
-#   scp -i your-key.pem -r deploy/* ubuntu@<elastic-ip>:/tmp/invoiceiq/
-bash /tmp/invoiceiq/scripts/bootstrap.sh          # Docker, Compose plugin, 2 GB swap, /opt/invoiceiq
+#   scp -i your-key.pem -r deploy/* ubuntu@<elastic-ip>:/tmp/veribill/
+bash /tmp/veribill/scripts/bootstrap.sh          # Docker, Compose plugin, 2 GB swap, /opt/veribill
 exit                                               # log out/in so the docker group applies
 ssh -i your-key.pem ubuntu@<elastic-ip>
-cp -r /tmp/invoiceiq/* /opt/invoiceiq/
-cd /opt/invoiceiq
+cp -r /tmp/veribill/* /opt/veribill/
+cd /opt/veribill
 cp .env.prod.example .env && nano .env             # fill every value (SETUP.md)
 chmod 600 .env && chmod +x scripts/*.sh
 ```
@@ -52,10 +52,10 @@ Pin a release with `IMAGE_TAG=<sha>` in `.env` to roll back.
 
 ## 5. Backups
 
-`scripts/backup.sh` writes a `pg_dump` (custom format) to `/opt/invoiceiq/backups`, keeping 14 days.
-Add to crontab: `15 2 * * * /opt/invoiceiq/scripts/backup.sh >> /opt/invoiceiq/backups/backup.log 2>&1`.
+`scripts/backup.sh` writes a `pg_dump` (custom format) to `/opt/veribill/backups`, keeping 14 days.
+Add to crontab: `15 2 * * * /opt/veribill/scripts/backup.sh >> /opt/veribill/backups/backup.log 2>&1`.
 Files live in Cloudinary. Copy dumps off the instance occasionally (`scp`), since S3 is out of scope.
-Restore: `docker compose -f compose.prod.yml --env-file .env exec -T postgres pg_restore -U invoiceiq -d invoiceiq --clean < backups/<file>.dump`.
+Restore: `docker compose -f compose.prod.yml --env-file .env exec -T postgres pg_restore -U veribill -d veribill --clean < backups/<file>.dump`.
 
 ## 6. Sizing notes
 

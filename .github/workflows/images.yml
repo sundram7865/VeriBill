@@ -1,7 +1,7 @@
 name: images
 
 # Builds the three production images and pushes them to GitHub Container Registry:
-#   ghcr.io/<owner>/invoiceiq-api, -extractor, -nginx  (tags: <git sha> and latest)
+#   ghcr.io/<owner>/veribill-api, -extractor, -nginx  (tags: <git sha> and latest)
 on:
   push:
     branches: [main]
@@ -46,7 +46,7 @@ jobs:
           target: ${{ matrix.target }}
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER }}/invoiceiq-${{ matrix.name }}:${{ github.sha }}
-            ghcr.io/${{ env.OWNER }}/invoiceiq-${{ matrix.name }}:latest
+            ghcr.io/${{ env.OWNER }}/veribill-${{ matrix.name }}:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/veribill-${{ matrix.name }}:latest
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
