@@ -1,0 +1,62 @@
+# Rendered by the nginx image at start-up (envsubst replaces ${DOMAIN}).
+
+# Requests per client IP to the API; the API also rate-limits login and uploads itself.
+limit_req_zone $binary_remote_addr zone=api:10m rate=20r/s;
+
+server {
+    listen 80;
+    server_name ${DOMAIN};
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${DOMAIN};
+
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_session_cache shared:SSL:5m;
+
+    add_header Strict-Transport-Security "max-age=31536000" always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options DENY always;
+    add_header Referrer-Policy same-origin always;
+    # Next's static export inlines small bootstrap scripts, hence 'unsafe-inline' for scripts.
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; worker-src 'self' blob:; connect-src 'self'; frame-ancestors 'none'" always;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+
+    # The API: up to 20 files x 10 MB per upload request.
+    location /api/ {
+        limit_req zone=api burst=40 nodelay;
+        client_max_body_size 210m;
+        proxy_pass http://api:4000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Request-Id $request_id;
+        proxy_read_timeout 120s;
+    }
+
+    # The static web app. Routes are files (/review.html) with query strings, no SSR.
+    location / {
+        root /usr/share/nginx/html;
+        try_files $uri $uri.html $uri/ /index.html;
+        location /_next/static/ {
+            root /usr/share/nginx/html;
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+    }
+}
