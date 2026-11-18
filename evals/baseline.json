@@ -1,0 +1,329 @@
+{
+  "meta": {
+    "suite": "synthetic",
+    "extractor": "oracle",
+    "eval_mode": null,
+    "split": "all",
+    "variant": "all",
+    "max_repairs": 2,
+    "threshold": 0.9,
+    "reference_date": "2026-11-01",
+    "created_at": "2026-11-18T09:12:47+00:00",
+    "command": "python -m evals.run --extractor oracle --max-repairs 2 --threshold 0.9 --out evals/results/oracle-all-r2.json",
+    "note": "Oracle run (LLM replaced by ground truth). Gate reference for parsing/OCR/grounding/validators/routing."
+  },
+  "summary": {
+    "cases": 150,
+    "overall": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "field_exact_match": 1.0,
+      "fully_correct_rate": 1.0,
+      "grounded_field_rate": 0.9689582936583508,
+      "failed": 0
+    },
+    "routing": {
+      "auto_approval_rate": 0.5733333333333334,
+      "auto_approved_accuracy": 1.0,
+      "flawed_docs_auto_approved": 0,
+      "decisions": {
+        "auto_approve": 86,
+        "needs_review": 64
+      }
+    },
+    "validators": {
+      "catch_rate": 1.0,
+      "flawed_cases": 20,
+      "false_alarm_rate": 0.09230769230769231,
+      "clean_correct_cases": 130
+    },
+    "adversarial": {
+      "injection_resistance": 1.0,
+      "injection_cases": 10,
+      "duplicate_key_match_rate": 1.0,
+      "duplicate_pairs": 10
+    },
+    "cost": {
+      "total_usd": 0.0,
+      "per_document_usd": 0.0,
+      "tokens_in": 0,
+      "tokens_out": 0
+    },
+    "latency_ms": {
+      "p50": 702,
+      "p95": 6119
+    },
+    "by_variant": {
+      "digital": {
+        "cases": 88,
+        "fully_correct_rate": 1.0,
+        "auto_approval_rate": 0.8295454545454546,
+        "grounded_field_rate": 1.0
+      },
+      "scan_blur": {
+        "cases": 11,
+        "fully_correct_rate": 1.0,
+        "auto_approval_rate": 0.45454545454545453,
+        "grounded_field_rate": 0.9683908045977011
+      },
+      "scan_clean": {
+        "cases": 18,
+        "fully_correct_rate": 1.0,
+        "auto_approval_rate": 0.1111111111111111,
+        "grounded_field_rate": 0.9888268156424581
+      },
+      "scan_lowres": {
+        "cases": 11,
+        "fully_correct_rate": 1.0,
+        "auto_approval_rate": 0.2727272727272727,
+        "grounded_field_rate": 0.9702176403207331
+      },
+      "scan_noise": {
+        "cases": 11,
+        "fully_correct_rate": 1.0,
+        "auto_approval_rate": 0.0,
+        "grounded_field_rate": 0.8015075376884422
+      },
+      "scan_rotate": {
+        "cases": 11,
+        "fully_correct_rate": 1.0,
+        "auto_approval_rate": 0.2727272727272727,
+        "grounded_field_rate": 0.8637532133676092
+      }
+    },
+    "per_field": {
+      "header.buyer_gstin": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "header.buyer_name": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "header.currency": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "header.invoice_date": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "header.invoice_number": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "header.place_of_supply": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "header.supplier_gstin": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "header.supplier_name": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "line_items.*.cgst_amount": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 561
+      },
+      "line_items.*.cgst_rate": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 561
+      },
+      "line_items.*.description": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 923
+      },
+      "line_items.*.discount": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 110
+      },
+      "line_items.*.hsn_sac": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 923
+      },
+      "line_items.*.igst_amount": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 362
+      },
+      "line_items.*.igst_rate": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 362
+      },
+      "line_items.*.quantity": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 923
+      },
+      "line_items.*.rate": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 923
+      },
+      "line_items.*.sgst_amount": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 561
+      },
+      "line_items.*.sgst_rate": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 561
+      },
+      "line_items.*.taxable_value": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 923
+      },
+      "line_items.*.unit": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 923
+      },
+      "totals.grand_total": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "totals.round_off": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 81
+      },
+      "totals.subtotal": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      },
+      "totals.total_tax": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "exact_match": 1.0,
+        "support": 150
+      }
+    }
+  },
+  "threshold_table": [
+    {
+      "threshold": 0.5,
+      "auto_approval_rate": 0.78,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 117
+    },
+    {
+      "threshold": 0.6,
+      "auto_approval_rate": 0.7466666666666667,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 112
+    },
+    {
+      "threshold": 0.7,
+      "auto_approval_rate": 0.7266666666666667,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 109
+    },
+    {
+      "threshold": 0.75,
+      "auto_approval_rate": 0.72,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 108
+    },
+    {
+      "threshold": 0.8,
+      "auto_approval_rate": 0.6933333333333334,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 104
+    },
+    {
+      "threshold": 0.85,
+      "auto_approval_rate": 0.6666666666666666,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 100
+    },
+    {
+      "threshold": 0.9,
+      "auto_approval_rate": 0.5733333333333334,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 86
+    },
+    {
+      "threshold": 0.95,
+      "auto_approval_rate": 0.4866666666666667,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 73
+    },
+    {
+      "threshold": 0.98,
+      "auto_approval_rate": 0.4866666666666667,
+      "auto_approved_accuracy": 1.0,
+      "auto_approved": 73
+    }
+  ]
+}
