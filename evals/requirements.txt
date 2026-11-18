@@ -1,0 +1,3 @@
+# Eval harness dependencies (pinned). The extractor package itself is installed with:
+#   pip install --no-deps -e services/extractor
+fpdf2==2.9.0
