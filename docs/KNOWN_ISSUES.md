@@ -1,0 +1,19 @@
+# Known issues
+
+Items that could not be completed or verified here, with the workaround applied.
+
+| # | Issue | Impact | Workaround / next step |
+|---|-------|--------|------------------------|
+| 1 | No OpenAI API key in the build environment | Extraction accuracy, cost per document, live latency, threshold tuning and repair-loop gains with a real model are **NOT MEASURED** | Offline numbers come from the oracle client (labelled). Run `eval-live.yml` or the commands in EVAL_REPORT.md with a key. |
+| 2 | No Cloudinary credentials here | The Cloudinary driver is unit-tested with a mocked fetch and its signed-URL format is checked, but no real upload/download ran | First real upload after setting keys is the test (SETUP.md §2). If downloads fail with 401, enable "Allow delivery of PDF and ZIP files". |
+| 3 | Phase 4 "end-to-end script ends with a stored result" only partly demonstrated | Against the Docker stack (all services healthy), `pnpm e2e` uploads `c0001.pdf`, the worker container downloads it and calls the extractor container, which correctly answers `llm_not_configured`; the document ends as `failed` with that reason | The stored-result path is covered by `queue.test.ts` (fake extractor: run, fields and invoice stored) and by a host run with a scratch oracle-backed extractor. Re-run `pnpm e2e` once `OPENAI_API_KEY` is set. |
+| 4 | API page-count check is heuristic | PDFs with compressed object streams pass the API check with an unknown page count | The extractor's ingest (PyMuPDF) enforces the 20-page limit and the document fails with `too_many_pages` (D-009). |
+| 5 | Reviewers cannot add or delete line items | A line the model missed entirely can't be added in the UI | Reject and re-upload, or extend `review.service.ts` (planned next step). |
+| 6 | 12 of 130 clean invoices go to review in the oracle run (all scans) | Noisy, rotated or blurred scans where OCR could not confirm a required field (`not_grounded`); noisy scans never auto-approve | Intended conservative behaviour: a value the page can't confirm should be checked by a human. Better OCR (deskew, adaptive binarisation, 300 dpi) is next; measure with `--variant scan`. |
+| 7 | Production memory limits not load-tested | Unknown headroom on t3.micro | Start on t3.small; watch `docker stats`. |
+| 8 | Docker Desktop on the build machine was very slow (1–2 min per container start), hung once while building all images in parallel, and image builds failed on npm registry socket timeouts and a BuildKit frontend crash | Full `docker compose up` verification took several attempts | Build one service at a time; Dockerfiles now set longer npm fetch timeouts/retries and no longer pull a remote `# syntax=` frontend. |
+| 9 | pgvector experiment (Phase 6, optional) not run | No evidence either way | Needs a live model (D-033). |
+| 10 | `prisma migrate dev` cannot reach `localhost` on this Windows machine (IPv6 first) | Local commands need `127.0.0.1` | Defaults and docs use `127.0.0.1`. |
+| 11 | The `web` dev container image could not be built here (npm downloads timed out after 30 min) | `docker compose up` web service unverified on this machine | The static export builds on the host (`pnpm --filter @invoiceiq/web build`) and `next dev` was verified against the API; production uses the Nginx image built in CI. On a normal network `docker compose build web` should work. |
+| 12 | The browser UI was not clicked through by an automated browser | Visual layout of the review screen (boxes over react-pdf) is verified only by build, types, unit tests and HTTP checks | Follow docs/MANUAL_TEST.md once; Playwright tests are on the "next" list. |
+| 13 | Migrations failed once on this machine because Prisma's 5 s connect timeout expired under heavy load | `migrate` exited and api/worker did not start | Compose files now add `connect_timeout=30` to `DATABASE_URL`; re-running `docker compose up` succeeded. |
