@@ -1,7 +1,8 @@
 name: eval-live
 
-# Manual live eval against the real model. Costs money: gpt-6-luna on the 150-case suite is a
-# few cents (estimate; check pricing.json), and LLM_DAILY_BUDGET_USD caps it.
+# Manual live eval against the real model. With the default Gemini free tier it costs nothing but
+# counts against the key's daily request quota (150 cases need roughly 150-450 requests).
+# On a paid key, cost is estimated from pricing.json and LLM_DAILY_BUDGET_USD caps it.
 # Record mode saves every response so later runs (and CI) can replay them offline.
 on:
   workflow_dispatch:
@@ -21,9 +22,12 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
+      LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'gemini' }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      EXTRACT_MODEL: ${{ vars.EXTRACT_MODEL || 'gpt-6-luna' }}
-      REPAIR_MODEL: ${{ vars.REPAIR_MODEL || 'gpt-6-luna' }}
+      LLM_BILLING_TIER: ${{ vars.LLM_BILLING_TIER || 'free' }}
+      EXTRACT_MODEL: ${{ vars.EXTRACT_MODEL || 'gemini-3.5-flash-lite' }}
+      REPAIR_MODEL: ${{ vars.REPAIR_MODEL || 'gemini-3.5-flash-lite' }}
       LLM_REASONING_EFFORT: low
       LLM_DAILY_BUDGET_USD: '2'
       EVAL_MODE: ${{ inputs.mode }}
