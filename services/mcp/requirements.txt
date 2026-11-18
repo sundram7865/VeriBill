@@ -1,0 +1,3 @@
+# InvoiceIQ MCP server (read-only, stdio). Pinned.
+fastmcp==4.2.1
+httpx==0.28.1
